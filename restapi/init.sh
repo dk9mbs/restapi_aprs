@@ -7,6 +7,6 @@ then
 fi
 
 
-export PYTHONPATH=$PYTHONPATH:$RESTAPI/examples
+export PYTHONPATH=$PYTHONPATH:$RESTAPI/tools
 echo "Setting PYTHONPATH => $PYTHONPATH"
 

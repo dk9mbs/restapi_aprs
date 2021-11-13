@@ -1,0 +1,38 @@
+{% extends "templates/base/base.htm" %}
+{% import "templates/base/uitools.htm" as forms %}
+
+
+
+{% block title %}TuxLog{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+
+    {% call forms.record_form( table, '' ) %}
+
+    {% call forms.row_form_group() %}
+        {% call forms.data_select('login_id','Login', '', 'aprs_login', 'default','%') %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('source_address', 'Sourceaddress', '', '' ) %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('object_name', 'Objectname', '', '' ) %}
+        {% endcall %}
+    {% endcall %}
+
+
+    {% endcall %}
+
+{% endblock %}
+
+
+
+

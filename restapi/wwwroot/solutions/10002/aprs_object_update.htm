@@ -1,0 +1,101 @@
+{% extends "templates/base/base.htm" %}
+{% import "templates/base/uitools.htm" as forms %}
+
+
+
+{% block title %}TuxLog{% endblock %}
+
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+
+    {% call forms.record_form( table, id ) %}
+
+    {% call forms.row() %}
+        {% call forms.input('id', 'ID', 'Login ID', data['id'], disabled=True ) %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row_form_group() %}
+        {% call forms.data_select('login_id','Login', data['login_id'], 'aprs_login', 'default','%') %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('source_address', 'Sourceaddress', '', data['source_address'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('object_name', 'Objectname', '', data['object_name'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('type', 'Type', '', data['type'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('overlay', 'Overlay', '', data['overlay'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+
+    {% call forms.row() %}
+        {% call forms.input('lat_deg', 'Lat. deg.', '', data['lat_deg'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('lat_min', 'Lat. min.', '', data['lat_min'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('lat_sec', 'Lat. sec.', '', data['lat_sec'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+
+
+    {% call forms.row() %}
+        {% call forms.input('long_deg', 'Long. deg.', '', data['long_deg'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('long_min', 'Long. min.', '', data['long_min'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('long_sec', 'Long. sec.', '', data['long_sec'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+
+
+
+    {% call forms.row() %}
+        {% call forms.input('symbol_code', 'Symbolcode', '', data['symbol_code'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+    {% call forms.row() %}
+        {% call forms.input('comment', 'Comment', '', data['comment'] ) %}
+        {% endcall %}
+    {% endcall %}
+
+
+
+
+    {% endcall %}
+
+{% endblock %}
+
+
+
+
