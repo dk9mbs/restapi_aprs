@@ -86,5 +86,5 @@ def __send(aprs,callsign,passcode, logger):
     s.connect((host, port))
     s.send(login.encode())
     packet=f"{aprs}\r\n"
-    s.send(packet.encode())
+    s.send(packet.encode(errors='ignore'))
     s.close()

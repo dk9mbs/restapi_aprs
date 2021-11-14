@@ -51,6 +51,8 @@ CREATE TABLE IF NOT EXISTS aprs_object(
     FOREIGN KEY (login_id) REFERENCES aprs_login(id)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE aprs_object MODIFY COLUMN comment varchar(250);
+
 INSERT IGNORE INTO aprs_login(id,callsign,passcode) VALUES (1,'DK9MBS',-1);
 
 INSERT IGNORE INTO aprs_object (id,login_id,source_address,object_name,type,symbol_code,lat_deg,lat_min,lat_sec,long_deg,long_min,long_sec,comment) 
