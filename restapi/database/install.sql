@@ -74,12 +74,18 @@ INSERT IGNORE INTO api_table_view (id,type_id,name,table_id,id_field_name,soluti
     <orderby>
         <field name="object_name" alias="o" sort="ASC"/>
     </orderby>
+    <joins>
+        <join type="inner" table="aprs_login" alias="l" condition="o.login_id=l.id"/>
+    </joins>
     <select>
         <field name="id" table_alias="o" alias="id"/>
-        <field name="object_name" table_alias="o"/>
-        <field name="type" table_alias="o"/>
-        <field name="overlay" table_alias="o"/>
-        <field name="comment" table_alias="o"/>
+        <field name="callsign" table_alias="l" header="Login"/>
+        <field name="source_address" table_alias="o" header="Sourceaddress"/>
+        <field name="object_name" table_alias="o" header="Objectname"/>
+        <field name="type" table_alias="o" header="Type"/>
+        <field name="overlay" table_alias="o" header="Overlay"/>
+        <field name="symbol_code" table_alias="o" header="Symbolcode"/>
+        <field name="comment" table_alias="o" header="Comment"/>
     </select>
 </restapi>');
 
@@ -93,9 +99,9 @@ INSERT IGNORE INTO api_table_view (id,type_id,name,table_id,id_field_name,soluti
         <field name="callsign" alias="l" sort="ASC"/>
     </orderby>
     <select>
-        <field name="id" table_alias="l" alias="id"/>
-        <field name="callsign" table_alias="l"/>
-        <field name="passcode" table_alias="l"/>
+        <field name="id" table_alias="l" alias="id" header="ID"/>
+        <field name="callsign" table_alias="l" header="Callsign"/>
+        <field name="passcode" table_alias="l" header="Passcode"/>
     </select>
 </restapi>');
 
