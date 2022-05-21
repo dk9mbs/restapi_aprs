@@ -1,3 +1,4 @@
+DELETE FROM api_process_log WHERE event_handler_id IN (SELECT id FROM api_event_handler WHERE solution_id=10002);
 DELETE FROM api_event_handler WHERE solution_id=10002;
 DELETE FROM api_table_view WHERE solution_id=10002;
 DELETE FROM api_ui_app_nav_item WHERE solution_id=10002;
