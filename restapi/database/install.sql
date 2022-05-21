@@ -1,18 +1,21 @@
 DELETE FROM api_event_handler WHERE solution_id=10002;
 DELETE FROM api_table_view WHERE solution_id=10002;
+DELETE FROM api_ui_app_nav_item WHERE solution_id=10002;
+DELETE FROM api_ui_app WHERE solution_id=10002;
+
 
 INSERT IGNORE INTO api_solution(id,name) VALUES (10002, 'aprs');
 INSERT IGNORE INTO api_user (id,username,password,is_admin,disabled,solution_id) VALUES (910002,'aprs','password',0,0,10002);
 INSERT IGNORE INTO api_group(id,groupname,solution_id) VALUES (910002,'aprs',10002);
 INSERT IGNORE INTO api_user_group(user_id,group_id,solution_id) VALUES (910002,910002,10002);
 
-INSERT IGNORE INTO api_table(id,alias,table_name,id_field_name,id_field_type,desc_field_name,enable_audit_log,solution_id)
+INSERT IGNORE INTO api_table(id,name,alias,table_name,id_field_name,id_field_type,desc_field_name,enable_audit_log,solution_id)
     VALUES
-    (910002,'aprs_object','aprs_object','id','int','object_name',-1,10002);
+    (910002,'APRS Object','aprs_object','aprs_object','id','int','object_name',-1,10002);
 
-INSERT IGNORE INTO api_table(id,alias,table_name,id_field_name,id_field_type,desc_field_name,enable_audit_log,solution_id)
+INSERT IGNORE INTO api_table(id,name,alias,table_name,id_field_name,id_field_type,desc_field_name,enable_audit_log,solution_id)
     VALUES
-    (910003,'aprs_login','aprs_login','id','int','callsign',-1,10002);
+    (910003,'APRS Login','aprs_login','aprs_login','id','int','callsign',-1,10002);
 
 
 INSERT IGNORE INTO api_group_permission (group_id,table_id,mode_create,mode_read,mode_update,mode_delete,solution_id)
@@ -63,6 +66,18 @@ INSERT IGNORE INTO aprs_object (id,login_id,source_address,object_name,type,symb
 
 INSERT IGNORE INTO aprs_object (id,login_id,source_address,object_name,type,symbol_code,lat_deg,lat_min,lat_sec,long_deg,long_min,long_sec,comment) 
     VALUES (3,1,'DK9MBS','DK9MBS','*','r',52,2,55.8492,10,22,21.972,'144.650MHz - https://dk9mbs.de');
+
+
+INSERT IGNORE INTO api_ui_app (id, name,description,home_url,solution_id)
+VALUES (
+910000,'APRS','APRS (HAM)','/ui/v1.0/data/view/aprs_object/default?app_id=910000',10002);
+
+INSERT IGNORE INTO api_ui_app_nav_item(id, app_id,name,url,type_id,solution_id)
+VALUES (910000,910000,'Objects','/ui/v1.0/data/view/aprs_object/default',1,10002);
+
+INSERT IGNORE INTO api_ui_app_nav_item(id, app_id,name,url,type_id,solution_id)
+VALUES (910001,910000,'Logins','/ui/v1.0/data/view/aprs_login/default',1,10002);
+
 
 
 INSERT IGNORE INTO api_table_view (id,type_id,name,table_id,id_field_name,solution_id,fetch_xml) VALUES (
