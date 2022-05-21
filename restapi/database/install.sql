@@ -8,7 +8,7 @@ INSERT IGNORE INTO api_user_group(user_id,group_id,solution_id) VALUES (910002,9
 
 INSERT IGNORE INTO api_table(id,alias,table_name,id_field_name,id_field_type,desc_field_name,enable_audit_log,solution_id)
     VALUES
-    (910002,'aprs_object','aprs_object','id','int','name',-1,10002);
+    (910002,'aprs_object','aprs_object','id','int','object_name',-1,10002);
 
 INSERT IGNORE INTO api_table(id,alias,table_name,id_field_name,id_field_type,desc_field_name,enable_audit_log,solution_id)
     VALUES
