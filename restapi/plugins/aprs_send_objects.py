@@ -6,6 +6,7 @@ from core.fetchxmlparser import FetchXmlParser
 from services.database import DatabaseServices
 from core import log
 from core.meta import read_table_meta
+from plugins.aprs_lib_network import send
 
 logger=log.create_logger(__name__)
 
@@ -72,19 +73,8 @@ def execute(context, plugin_context, params):
 
         payload=f";{obj_name}{type}{timestamp}{lat}{overlay}{long}{symbol}{comment}"
         aprs=f"{obj['source_address']}>APRS,TCPIP*:{payload}"
-        __send(aprs,callsign,passcode, logger)
+        #__send(aprs,callsign,passcode, logger)
+        send(aprs,callsign,passcode, logger)
 
     params['output']['aprs']=""
 
-
-def __send(aprs,callsign,passcode, logger):
-    logger.info(aprs)
-    login=f"user {callsign} pass {passcode}\r\n"
-    host = "rotate.aprs2.net"
-    port = 14580
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((host, port))
-    s.send(login.encode())
-    packet=f"{aprs}\r\n"
-    s.send(packet.encode(errors='ignore'))
-    s.close()

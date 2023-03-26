@@ -16,9 +16,13 @@ class TestAprsObject(unittest.TestCase):
         self.context=AppInfo.create_context(session_id)
 
     def test_combo_source(self):
-        params={}
-        plugin_context=Plugin.create_context("$timer_every_minute","execute","after")
-        print(execute(self.context,plugin_context, {"input": params, "output": {}}))
+        params={"input": {}, "output": {}}
+        #plugin_context=Plugin.create_context("$timer_every_minute","execute","after")
+        #print(execute(self.context,plugin_context, {"input": params, "output": {}}))
+
+        from plugins.aprs_send_objects import execute
+        execute(self.context, {}, params)
+
 
     def tearDown(self):
         AppInfo.save_context(self.context, True)
