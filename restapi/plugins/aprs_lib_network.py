@@ -12,6 +12,7 @@ logger=log.create_logger(__name__)
 def send(aprs,callsign,passcode, logger):
     logger.info(aprs)
     login=f"user {callsign} pass {passcode}\r\n"
+    logger.info(login)
     host = "rotate.aprs2.net"
     port = 14580
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

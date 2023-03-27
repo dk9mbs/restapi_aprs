@@ -44,7 +44,8 @@ call api_proc_create_table_field_instance(910004,1000, 'created_on','Erstellt am
 
 call api_proc_create_table_field_instance(910005,100, 'id','ID','string',1,'{"disabled": false}', @out_value);
 call api_proc_create_table_field_instance(910005,200, 'device','Device','string',1,'{"disabled": false}', @out_value);
-call api_proc_create_table_field_instance(910005,300, 'name','Bezeichnung','string',1,'{"disabled": false}', @out_value);
+call api_proc_create_table_field_instance(910005,300, 'login_id','APRS Login','int',2,'{"disabled": false}', @out_value);
+call api_proc_create_table_field_instance(910005,400, 'name','Bezeichnung','string',1,'{"disabled": false}', @out_value);
 
 call api_proc_create_table_field_instance(910006,100, 'id','ID','string',1,'{"disabled": true}', @out_value);
 call api_proc_create_table_field_instance(910006,200, 'name','Bezeichnung','string',1,'{"disabled": true}', @out_value);
@@ -69,35 +70,8 @@ INSERT IGNORE INTO api_event_handler (id,plugin_module_name,publisher,event,type
 INSERT IGNORE INTO api_event_handler (id,plugin_module_name,publisher,event,type,sorting,solution_id)
     VALUES (910002,'aprs_plugin_owntrack','owntracks','mqtt_message','after',100,10002);
 
-CREATE TABLE IF NOT EXISTS aprs_owntrack_client(
-    id varchar(50) NOT NULL PRIMARY KEY,
-    device varchar(50) NOT NULL DEFAULT '*',
-    name varchar(50) NOT NULL,
-    INDEX(device)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE IF NOT EXISTS aprs_owntrack_type(
-    id varchar(50) NOT NULL PRIMARY KEY,
-    name varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT IGNORE INTO aprs_owntrack_type (id, name) VALUES ('WAYPOINT','Wegpunkt');
-INSERT IGNORE INTO aprs_owntrack_type (id, name) VALUES ('TRACKPOINT','Trackpunkt');
-
-CREATE TABLE IF NOT EXISTS aprs_owntrack_log(
-    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    type_id varchar(50) NOT NULL DEFAULT 'TRACKPOINT',
-    batt int NULL DEFAULT '0',
-    lon decimal(12,6) NULL DEFAULT '0',
-    lat decimal(12,6) NULL DEFAULT '0',
-    ele decimal(12,6) NULL DEFAULT '0',
-    topic varchar(250) NOT NULL,
-    client_id varchar(50) NOT NULL DEFAULT '*',
-    description varchar(250) NULL COMMENT '',
-    created_on datetime NOT NULL DEFAULT current_timestamp,
-    FOREIGN KEY (client_id) REFERENCES aprs_owntrack_client(id),
-    FOREIGN KEY (type_id) REFERENCES aprs_owntrack_type(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT IGNORE INTO api_event_handler (id,plugin_module_name,publisher,event,type,sorting,solution_id)
+    VALUES (910003,'plugins.aprs_plugin_owntrack_aprs','aprs_owntrack_log','insert','after',100,10002);
 
 CREATE TABLE IF NOT EXISTS aprs_login(
     id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -135,6 +109,43 @@ INSERT IGNORE INTO aprs_object (id,login_id,source_address,object_name,type,symb
 
 INSERT IGNORE INTO aprs_object (id,login_id,source_address,object_name,type,symbol_code,lat_deg,lat_min,lat_sec,long_deg,long_min,long_sec,comment) 
     VALUES (3,1,'DK9MBS','DK9MBS','*','r',52,2,55.8492,10,22,21.972,'144.650MHz - https://dk9mbs.de');
+
+
+CREATE TABLE IF NOT EXISTS aprs_owntrack_client(
+    id varchar(50) NOT NULL PRIMARY KEY,
+    device varchar(50) NOT NULL DEFAULT '*',
+    name varchar(50) NOT NULL,
+    login_id int NULL COMMENT 'APRS Login ID',
+    FOREIGN KEY(login_id) REFERENCES aprs_login(id),
+    INDEX(device)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE aprs_owntrack_client ADD COLUMN IF NOT EXISTS login_id int NULL COMMENT 'APRS Login ID';
+ALTER TABLE aprs_owntrack_client ADD FOREIGN KEY IF NOT EXISTS (login_id) REFERENCES aprs_login(id);
+
+CREATE TABLE IF NOT EXISTS aprs_owntrack_type(
+    id varchar(50) NOT NULL PRIMARY KEY,
+    name varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT IGNORE INTO aprs_owntrack_type (id, name) VALUES ('WAYPOINT','Wegpunkt');
+INSERT IGNORE INTO aprs_owntrack_type (id, name) VALUES ('TRACKPOINT','Trackpunkt');
+
+CREATE TABLE IF NOT EXISTS aprs_owntrack_log(
+    id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    type_id varchar(50) NOT NULL DEFAULT 'TRACKPOINT',
+    batt int NULL DEFAULT '0',
+    lon decimal(12,6) NULL DEFAULT '0',
+    lat decimal(12,6) NULL DEFAULT '0',
+    ele decimal(12,6) NULL DEFAULT '0',
+    topic varchar(250) NOT NULL,
+    client_id varchar(50) NOT NULL DEFAULT '*',
+    description varchar(250) NULL COMMENT '',
+    created_on datetime NOT NULL DEFAULT current_timestamp,
+    FOREIGN KEY (client_id) REFERENCES aprs_owntrack_client(id),
+    FOREIGN KEY (type_id) REFERENCES aprs_owntrack_type(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 
 INSERT IGNORE INTO api_ui_app (id, name,description,home_url,solution_id)
@@ -224,7 +235,7 @@ INSERT IGNORE INTO api_table_view (id,type_id,name,table_id,id_field_name,soluti
     <orderby>
         <field name="id" alias="l" sort="ASC"/>
     </orderby>
-</restapi>','{"id": {},"device":{}, "name": {}}');
+</restapi>','{"id": {},"device":{},"__login_id@name":{}, "name": {}}');
 
 INSERT IGNORE INTO api_table_view (id,type_id,name,table_id,id_field_name,solution_id,fetch_xml, columns) VALUES (
 910005,'LISTVIEW','default',910006,'id',10002,'<restapi type="select">
