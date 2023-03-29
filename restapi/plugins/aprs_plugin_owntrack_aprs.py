@@ -33,7 +33,9 @@ def execute(context, plugin_context, params):
         <table name="aprs_owntrack_client" alias="c"/>
         <filter type="and">
             <condition field="id" value="{params['data']['client_id']['value']}" operator="="/>
-            <condition field="login_id" value="" operator="notnull"/>
+            <condition field="aprs_login_id" value="" operator="notnull"/>
+            <condition field="aprs_source_address" value="" operator="notnull"/>
+            <condition field="aprs_object_name" value="" operator="notnull"/>
         </filter>
     </restapi>
     """
@@ -47,7 +49,7 @@ def execute(context, plugin_context, params):
     <restapi type="select">
         <table name="aprs_login" alias="l"/>
         <filter type="and">
-            <condition field="id" value="{rs_client.get_result()['login_id']}" operator="="/>
+            <condition field="id" value="{rs_client.get_result()['aprs_login_id']}" operator="="/>
         </filter>
     </restapi>
     """
@@ -61,12 +63,12 @@ def execute(context, plugin_context, params):
     timestamp=datetime.today().strftime('%d%H%M')+'z'
     lat,lon=GeoCoordinateTools.decimal_to_aprs(lat_dec, lon_dec)
 
-    obj_name="CALL-5".ljust(9)
+    obj_name=rs_client.get_result()['aprs_object_name'].ljust(9)
     type="*"
     overlay="/".ljust(1)
     symbol="[".ljust(1)
     comment=""
-    source_address="CALL"
+    source_address=rs_client.get_result()['aprs_source_address']
     payload=f";{obj_name}{type}{timestamp}{lat}{overlay}{lon}{symbol}{comment}"
     aprs=f"{source_address}>APRS,TCPIP*:{payload}"
 

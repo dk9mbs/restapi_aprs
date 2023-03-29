@@ -43,9 +43,11 @@ call api_proc_create_table_field_instance(910004,900, 'ele','Elevation','int',14
 call api_proc_create_table_field_instance(910004,1000, 'created_on','Erstellt am','datetime',9,'{"disabled": true}', @out_value);
 
 call api_proc_create_table_field_instance(910005,100, 'id','ID','string',1,'{"disabled": false}', @out_value);
-call api_proc_create_table_field_instance(910005,200, 'device','Device','string',1,'{"disabled": false}', @out_value);
-call api_proc_create_table_field_instance(910005,300, 'login_id','APRS Login','int',2,'{"disabled": false}', @out_value);
-call api_proc_create_table_field_instance(910005,400, 'name','Bezeichnung','string',1,'{"disabled": false}', @out_value);
+call api_proc_create_table_field_instance(910005,200, 'name','Bezeichnung','string',1,'{"disabled": false}', @out_value);
+call api_proc_create_table_field_instance(910005,300, 'device','Device','string',1,'{"disabled": false}', @out_value);
+call api_proc_create_table_field_instance(910005,400, 'aprs_login_id','APRS Login','int',2,'{"disabled": false}', @out_value);
+call api_proc_create_table_field_instance(910005,500, 'aprs_source_address','APRS Source Adresse','string',1,'{"disabled": false}', @out_value);
+call api_proc_create_table_field_instance(910005,600, 'aprs_object_name','APRS Objekt Name','string',1,'{"disabled": false}', @out_value);
 
 call api_proc_create_table_field_instance(910006,100, 'id','ID','string',1,'{"disabled": true}', @out_value);
 call api_proc_create_table_field_instance(910006,200, 'name','Bezeichnung','string',1,'{"disabled": true}', @out_value);
@@ -115,12 +117,16 @@ CREATE TABLE IF NOT EXISTS aprs_owntrack_client(
     id varchar(50) NOT NULL PRIMARY KEY,
     device varchar(50) NOT NULL DEFAULT '*',
     name varchar(50) NOT NULL,
-    login_id int NULL COMMENT 'APRS Login ID',
-    FOREIGN KEY(login_id) REFERENCES aprs_login(id),
+    aprs_login_id int NULL COMMENT 'APRS Login ID',
+    aprs_object_name varchar(50) NULL COMMENT 'APRS Objectname',
+    aprs_source_address varchar(50) NULL COMMENT 'APRS Sourceaddress',
+    FOREIGN KEY(aprs_login_id) REFERENCES aprs_login(id),
     INDEX(device)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-ALTER TABLE aprs_owntrack_client ADD COLUMN IF NOT EXISTS login_id int NULL COMMENT 'APRS Login ID';
-ALTER TABLE aprs_owntrack_client ADD FOREIGN KEY IF NOT EXISTS (login_id) REFERENCES aprs_login(id);
+ALTER TABLE aprs_owntrack_client ADD COLUMN IF NOT EXISTS aprs_login_id int NULL COMMENT 'APRS Login ID';
+ALTER TABLE aprs_owntrack_client ADD COLUMN IF NOT EXISTS aprs_object_name varchar(50) NULL COMMENT 'APRS Objectname';
+ALTER TABLE aprs_owntrack_client ADD COLUMN IF NOT EXISTS aprs_source_address varchar(50) NULL COMMENT 'APRS Sourceaddress';
+ALTER TABLE aprs_owntrack_client ADD FOREIGN KEY IF NOT EXISTS (aprs_login_id) REFERENCES aprs_login(id);
 
 CREATE TABLE IF NOT EXISTS aprs_owntrack_type(
     id varchar(50) NOT NULL PRIMARY KEY,
@@ -153,10 +159,10 @@ VALUES (
 910000,'APRS','APRS (HAM)','/ui/v1.0/data/view/aprs_object/default?app_id=910000',10002);
 
 INSERT IGNORE INTO api_ui_app_nav_item(id, app_id,name,url,type_id,solution_id)
-VALUES (910000,910000,'Objects','/ui/v1.0/data/view/aprs_object/default',1,10002);
+VALUES (910000,910000,'APRS Objekte','/ui/v1.0/data/view/aprs_object/default',1,10002);
 
 INSERT IGNORE INTO api_ui_app_nav_item(id, app_id,name,url,type_id,solution_id)
-VALUES (910001,910000,'Logins','/ui/v1.0/data/view/aprs_login/default',1,10002);
+VALUES (910001,910000,'APRS Logins','/ui/v1.0/data/view/aprs_login/default',1,10002);
 
 INSERT IGNORE INTO api_ui_app_nav_item(id, app_id,name,url,type_id,solution_id)
 VALUES (910002,910000,'Owntracks Tracks','/ui/v1.0/data/view/aprs_owntrack_log/default',1,10002);
@@ -227,7 +233,7 @@ INSERT IGNORE INTO api_table_view (id,type_id,name,table_id,id_field_name,soluti
     <orderby>
         <field name="created_on" alias="l" sort="DESC"/>
     </orderby>
-</restapi>','{"__client_id@name":{},"__type_id@name":{}, "batt": {},"lon": {},"lat": {},"ele":{},"description":{}, "created_on": {}}');
+</restapi>','{"__client_id@name":{},"__type_id@name":{}, "batt": {},"lon": {},"lat": {},"ele":{}, "created_on": {}}');
 
 INSERT IGNORE INTO api_table_view (id,type_id,name,table_id,id_field_name,solution_id,fetch_xml, columns) VALUES (
 910004,'LISTVIEW','default',910005,'id',10002,'<restapi type="select">
@@ -235,7 +241,7 @@ INSERT IGNORE INTO api_table_view (id,type_id,name,table_id,id_field_name,soluti
     <orderby>
         <field name="id" alias="l" sort="ASC"/>
     </orderby>
-</restapi>','{"id": {},"device":{},"__login_id@name":{}, "name": {}}');
+</restapi>','{"id": {},"device":{},"__aprs_login_id@name":{},"aprs_source_address":{},"aprs_object_name":{}, "name": {}}');
 
 INSERT IGNORE INTO api_table_view (id,type_id,name,table_id,id_field_name,solution_id,fetch_xml, columns) VALUES (
 910005,'LISTVIEW','default',910006,'id',10002,'<restapi type="select">
