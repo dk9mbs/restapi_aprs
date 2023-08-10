@@ -18,7 +18,8 @@ def execute(context, plugin_context, params):
         logger.warning(f"Missings params")
         return
 
-    data=json.loads(params)
+    #data=json.loads(params)
+    data=params
     target=None
 
     if data['data']['_type']=="location":
